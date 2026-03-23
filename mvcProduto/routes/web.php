@@ -8,3 +8,16 @@ Route::get('/', function () {
 });
 
 Route ::get("/produto/listar", [ProdutoController::class, "listar"])->name('Produto.listar');
+
+Route::get('/produto/cadastrar', function (){
+    return view("cadastro");
+})->name("produto.cadastro");
+
+
+Route::post('/produto/salvar', [ProdutoController::class, 'add'])->name('produto.salvar');
+
+
+Route::get('/produto/{id}/atualizar', [ProdutoController::class, 'atualizar'])->name('produto.atualizar');
+
+
+Route::put('produto/{id}/update', [ProdutoController::class,'update'])->name('produto.update');

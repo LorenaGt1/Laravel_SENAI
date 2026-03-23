@@ -12,4 +12,45 @@ class ProdutoController extends Controller
         $produtos = $query->get();
         return view ('listar', compact('produtos'));
     }
+
+    public function add (Request $request){
+        $request -> validate([
+            'nome' => "required|string|max:255",
+            'quantidade' => "required|integer",
+            'preco'=>"required|integer",
+        ]);
+
+        Produto::create([
+            'nome' => $request->nome,
+            'quantidade'=>$request->quantidade,
+            'preco'=>$request->preco
+        ]);
+
+        return redirect()->back()->with('success', 'Produto cadastrado com sucesso!');
+    }
+
+    public function atualizar($id){
+        $produto = Produto::findOrFail($id); 
+        return view('atualizar', compact('produto'));
+    }
+
+    public function update(Request $request, $id){
+        $request->validate ([
+            'nome'=> 'required|string|max:255',
+            'quantidade'=> "required|integer",
+            'preco'=> 'required|integer',
+
+        ]);
+
+        $produto = Produto::findOrFail($id);
+
+        $produto->nome = $request->nome; 
+        $produto->quantidade = $request-> quantidade;
+        $produto->preco = $request-> preco;
+
+        $produto->save(); 
+        return redirect()->back()->with('success', 'Produto cadastrado com sucesso!');
+
+    }
 }
+
