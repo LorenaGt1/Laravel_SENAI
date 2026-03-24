@@ -22,7 +22,7 @@
         <input type="quantidade" name="quantidade" id="quantidade" placeholder="Quantidade..." required value= "{{ old('quantidade')}}">
         
         <br><br>
-        <label for="preco"> Quantidade:</label>
+        <label for="preco"> Preço: </label>
         <input type="preco" name="preco" id="preco" placeholder="Preço..." required value= "{{ old('preco')}}">
 
 

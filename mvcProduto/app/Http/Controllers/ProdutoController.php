@@ -49,7 +49,7 @@ class ProdutoController extends Controller
         $produto->preco = $request-> preco;
 
         $produto->save(); 
-        return redirect()->back()->with('success', 'Produto cadastrado com sucesso!');
+        return redirect()->back()->with('success', 'Produto listado com sucesso!');
 
     }
 }
