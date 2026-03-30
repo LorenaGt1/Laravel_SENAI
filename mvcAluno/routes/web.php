@@ -22,3 +22,5 @@ Route::get('/aluno/{id}/atualizar', [AlunoController::class, 'atualizar'])->name
 
 
 Route::put('/aluno/{id}/update', [AlunoController::class,'update'])->name('aluno.update');
+
+Route::delete('/aluno/{id}', [AlunoController::class, 'deletar'])->name('aluno.deletar');
