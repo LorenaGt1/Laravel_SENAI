@@ -1,56 +1,77 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Produto;
 
+use App\Models\Produto;
+use App\Models\Setores;
+use App\Models\Detalhe;
 use Illuminate\Http\Request;
 
-class ProdutoController extends Controller
-{
+class ProdutoController extends Controller{
+
     public function listar(){
-        $query = Produto::query();
-        $produtos = $query->get();
-        return view ('listar', compact('produtos'));
+        $produtos = Produto::with('setor')->get();
+        return view('listar', compact('produtos'));
     }
 
-    public function add (Request $request){
-        $request -> validate([
-            'nome' => "required|string|max:255",
-            'quantidade' => "required|integer",
-            'preco'=>"required|integer",
+    public function create(){
+        $setores = Setores::all();
+        $detalhes = Detalhe::all();
+
+    return view('cadastro', compact('setores','detalhes'));
+    }
+
+    public function add(Request $request){
+
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'quantidade' => 'required|string|max:255',
+            'preco' => 'required|string|max:255',
+            'setor_id' => 'required|exists:setores,id'
         ]);
 
         Produto::create([
             'nome' => $request->nome,
-            'quantidade'=>$request->quantidade,
-            'preco'=>$request->preco
+            'quantidade' => $request->quantidade,
+            'preco' => $request->preco,
+            'setor_id' => $request->setor_id
         ]);
 
-        return redirect()->back()->with('success', 'Produto cadastrado com sucesso!');
+        return redirect()->back()->with('success','Produto cadastrado com sucesso!');
     }
 
     public function atualizar($id){
-        $produto = Produto::findOrFail($id); 
-        return view('atualizar', compact('produto'));
+        $produto = Produto::findOrFail($id);
+        $setores = Setores::all();
+
+        return view('atualizar', compact('produto','setores'));
     }
 
     public function update(Request $request, $id){
-        $request->validate ([
-            'nome'=> 'required|string|max:255',
-            'quantidade'=> "required|integer",
-            'preco'=> 'required|integer',
 
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'quantidade' => 'required|string|max:255',
+            'preco' => 'required|string|max:255',
+            'setor_id' => 'required|exists:setores,id' // 🔥 importante
         ]);
 
         $produto = Produto::findOrFail($id);
 
-        $produto->nome = $request->nome; 
-        $produto->quantidade = $request-> quantidade;
-        $produto->preco = $request-> preco;
+        $produto->update([
+            'nome' => $request->nome,
+            'quantidade' => $request->quantidade,
+            'preco' => $request->preco,
+            'setor_id' => $request->setor_id
+        ]);
 
-        $produto->save(); 
-        return redirect()->back()->with('success', 'Produto listado com sucesso!');
+        return redirect()->route('produto.listar')->with('success','Produto atualizado com sucesso!');
+    }
 
+    public function deletar($id){
+        $produto = Produto::findOrFail($id);
+        $produto->delete();
+
+        return redirect()->route('produto.listar')->with('success','Produto excluído com sucesso!');
     }
 }
-
