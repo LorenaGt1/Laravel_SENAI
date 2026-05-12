@@ -1,34 +1,64 @@
 <?php
-
+// estou no SetorApiController.php
 namespace App\Http\Controllers;
-
+use App\Models\Produto;
 use App\Models\Setores;
-use App\Models\Produtos;
+
 use Illuminate\Http\Request;
 
-class SetorApiController extends Controller{
-
-
+class SetorApiController extends Controller
+{
     public function listarApi(){
         $setores = Setores::all();
         return response()->json($setores);
     }
- 
- public function add(Request $request){
+
+    // estou no SetorApiController.php
+    public function addApi(Request $request){
 
         $request->validate([
             'nome' => 'required|string|max:255',
-            'ncorredor' => 'required|integer'
+            'num_setor' => 'required|numeric|max:255',
+            // para poder ser nulo ou existir na tabela setores
         ]);
 
-        Setores::create([
+        $setor = Setores::create([
             'nome' => $request->nome,
-            'ncorredor' => $request->ncorredor 
+            'num_setor' => $request->num_setor
         ]);
 
         return response()->json([
-            'message' => 'Setor criado',
+            'message' => 'Setor Criado',
             'setor' => $setor
-        ],200);
+        ], 200);
+    }
+
+     public function updateApi(Request $request, $id){
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'num_setor' => 'required|numeric|max:255',
+            // para poder ser nulo ou existir na tabela setores
+        ]);
+
+        $setor = Setores::findOrFail($id); // buscar setor para ser atualizado
+
+        $setor->nome = $request->nome; // atualizando o campo nome
+        $setor->num_setor = $request->num_setor; // atualizando o campo num_setor
+
+        $setor->save(); // salvando no banco de dados(fazendo update)
+
+       return response()->json([
+        'message' => 'Setor atualizado!',
+        'setor' => $setor,
+       ],200);
+    }
+
+    public function deletarApi($id){
+        $setor = Setores::findOrFail($id); // buscar o produto para depois deletar
+        $setor->delete(); // faz o delete no banco de dados
+
+     return response()->json([
+        'message' => 'Setor deletado com sucesso!',
+           ],200);
     }
 }
